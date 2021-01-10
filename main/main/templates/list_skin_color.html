@@ -1,0 +1,47 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>List Skin Tone</h2>
+<form method="post" action="/postbudget" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <table id="pdttable" class="table">
+                <tr>
+                    <th>Skin Tone</th>
+                </tr>
+                <tbody id="rown">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <a href="/addcolor" class="button">Add Skin Tone</a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+             $.ajax(
+            {
+                url: "/get_skin_color",
+                type: "post",
+                success: function (result) {
+                    results = JSON.parse(result);
+                    $.each(results, function (i, field) {
+                        var text = '<tr><td>' + field.name + '<td></tr>'
+                        $('#rown').append(text);
+                    });
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+    });
+    $.validate();
+</script>
+{% endblock %}

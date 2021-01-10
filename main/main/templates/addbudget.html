@@ -1,0 +1,32 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postbudget" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Minimum Amount *</label>
+                <input type="text" id="minimum_amount" data-validation="required" name="minimum_amount" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Maximum Amount</label>
+                <input type="text" id="maximum_amount" data-validation="required" name="maximum_amount" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Add Budget" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+    $.validate();
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>List Events</h2>
+<form method="post" action="/postbudget" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <table id="pdttable" class="table">
+                <tr>
+                    <th>Event</th>
+                </tr>
+                <tbody id="rown">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <a href="/addevents" class="button">Add Events</a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+             $.ajax(
+            {
+                url: "/get_events",
+                type: "post",
+                success: function (result) {
+                    results = JSON.parse(result);
+                    $.each(results, function (i, field) {
+                        var text = '<tr><td>' + field.name + '<td></tr>'
+                        $('#rown').append(text);
+                    });
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+    });
+    $.validate();
+</script>
+{% endblock %}

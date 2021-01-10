@@ -1,0 +1,196 @@
+﻿{% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postproduct" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name" data-validation="required" name="name" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>For Gender</label>
+                <select data-validation="required" name="gender" id="gender" class="form-control">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Category</label>
+                <select data-validation="required" name="category" id="category" class="form-control">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Rate</label>
+                <input type="text" id="rate" data-validation="required number" name="rate" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>color</label>
+                <input type="text" id="color" name="color" data-validation="required" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Upload Image</label>
+                <input type="file" id="file" name="image_file" data-validation="required" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Size</label>
+                <select data-validation="required" name="size" id="size" multiple="multiple" class="form-control">
+                </select>
+            </div>
+        </div>
+
+
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Season</label>
+                <select data-validation="required" multiple="multiple" name="season" id="season" class="form-control">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>Event</label>
+                <select multiple="multiple" data-validation="required" name="events" id="events" class="form-control">
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+       
+       
+
+        <div class="col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>decription</label>
+                <textarea data-validation="required" id="decription" name="decription" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <input type="submit" value="Add Item" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#budget').change(function () {
+            var budget = $(this).val();
+            if (budget != '' && budget != undefined) {
+                budget = budget.split('-');
+                var minimum = budget[0];
+                var maximum = budget[1];
+            }
+        });
+        $('#btn').click(function () {
+            alert($('#category').val());
+        });
+        $.ajax(
+            {
+                url: "/getcategory",
+                dataType: "html",
+                success: function (html) {
+                    $('#category').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getseason",
+                dataType: "html",
+                success: function (html) {
+                    $('#season').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+
+
+        $.ajax(
+            {
+                url: "/getevents",
+                dataType: "html",
+                success: function (html) {
+                    $('#events').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getsize",
+                dataType: "html",
+                success: function (html) {
+                    $('#size').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getbody_type",
+                dataType: "html",
+                success: function (html) {
+                    $('#body_type').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+        $.ajax(
+            {
+                url: "/getskin_color",
+                dataType: "html",
+                success: function (html) {
+                    $('#skin_color').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getgender",
+                dataType: "html",
+                success: function (html) {
+                    $('#gender').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+
+    });
+    $.validate();
+</script>
+{% endblock %}

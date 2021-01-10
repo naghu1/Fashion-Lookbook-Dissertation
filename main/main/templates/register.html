@@ -1,0 +1,105 @@
+﻿{% extends "layout.html" %} 
+{% block content %} 
+
+<!--<form method="post" action="/postregister">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name" data-validation="required" name="name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" id="email" data-validation="required email" name="email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="text" id="password" data-validation="required" name="password" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="phone" name="phone" data-validation="required number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <textarea data-validation="required" id="address" name="address" class="form-control"></textarea>
+            </div>
+        </div>
+
+    </div>
+    <input type="submit" value="Register" class="btn btn-primary" />
+</form>-->
+<div class="col-md-6 col-lg-6">
+    <form method="post" action="/postregister">
+        <br /> <br /> <br />
+        <h2>{{ title }}.</h2>
+        <div class="form-group">
+            <label>Name</label>
+            <input style="width:100%" type="text" id="name" data-validation="required" name="name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" id="email" data-validation="required email" name="email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" data-validation="required" name="password" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="phone" name="phone" data-validation="required number" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <textarea data-validation="required" id="address" name="address" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="inputAddress2">Address 2</label>
+            <input type="text" class="form-control" id="address_2" name="address_2" placeholder="Apartment, studio, or floor">
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck">
+                <label class="form-check-label" for="gridCheck">
+                    Check  the box
+                </label>
+            </div>
+        </div>
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </form>
+</div>
+<div class="col-md-6 col-lg-6">
+    <form method="post" action="/postlogin">
+        <br /> <br /> <br />
+        <h2>Login.</h2>
+        <div class="form-group">
+            <label>User name</label>
+            <input style="width:100%" type="text" id="name" data-validation="required" name="name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" data-validation="required" name="password" class="form-control" />
+        </div>
+        <input type="submit" value="Login" class="btn btn-primary" />
+    </form>
+    <input type="hidden" id="msg" value="{{msg}}" />
+</div>
+
+    {% endblock %}
+
+    {% block scripts %}
+    <script>
+        $(document).ready(function () {
+            var msg = $("#msg").val();
+            if (msg !== "" && msg !== undefined) {
+                alert('Registered Successfully');
+            }
+            
+        });
+        $.validate();
+    </script>
+    {% endblock %}

@@ -1,0 +1,29 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postcolor" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Size  *</label>
+                <input type="text" id="color_code" data-validation="required" name="color_code" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+    <input type="submit" value="Add color" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+    $.validate();
+</script>
+{% endblock %}

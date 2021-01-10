@@ -1,0 +1,29 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postbodytype" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Body Type  *</label>
+                <input type="text" id="body_type" data-validation="required" name="body_type" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+    <input type="submit" value="Add Body Type" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+    $.validate();
+</script>
+{% endblock %}

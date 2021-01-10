@@ -1,0 +1,48 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>List Budget</h2>
+<form method="post" action="/postbudget" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <table id="pdttable" class="table">
+                <tr>
+                    <th>Minmum Amount</th>
+                    <th>Minmum Amount</th>
+                </tr>
+                <tbody id="rown">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <a href="/addbudget" class="button">Add Budget</a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+             $.ajax(
+            {
+                url: "/get_budget_range",
+                type: "post",
+                success: function (result) {
+                    results = JSON.parse(result);
+                    $.each(results, function (i, field) {
+                        var text = '<tr><td>' + field.minimum_amount + '<td><td>' + field.maximum_amount + '<td></tr>'
+                        $('#rown').append(text);
+                    });
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+    });
+    $.validate();
+</script>
+{% endblock %}

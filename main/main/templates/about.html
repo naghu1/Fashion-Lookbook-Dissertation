@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+<p>Use this area to provide additional information.</p>
+
+
+
+<div>
+    {% for row in results %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+    </tr>
+    {% endfor %}
+</div>
+
+{% endblock %}

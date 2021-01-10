@@ -1,0 +1,50 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>Add Category.</h2>
+<form method="post" action="/postcategory" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Category  *</label>
+                <input type="text" id="category" data-validation="required" name="category" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label>Gender Specification(if any)</label>
+                    <select name="gender" id="gender" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>List Order</label>
+                <input type="number" id="list_order" name="list_order" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+    <input type="submit" value="Add Category" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $.ajax(
+            {
+                url: "/getgender",
+                dataType: "html",
+                success: function (html) {
+                    $('#gender').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+    });
+    $.validate();
+</script>
+{% endblock %}

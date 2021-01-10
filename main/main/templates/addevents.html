@@ -1,0 +1,29 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postevents" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Event  *</label>
+                <input type="text" id="myevent" data-validation="required" name="myevent" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+    <input type="submit" value="Add Events" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+    $.validate();
+</script>
+{% endblock %}

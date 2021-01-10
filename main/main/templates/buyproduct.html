@@ -1,0 +1,454 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<br /><br />  <br />
+<h2>{{ title }}.</h2>
+<form method="post" action="/postbuyproduct" enctype="multipart/form-data">
+    <style>
+        a {
+            text-decoration: none;
+            display: inline-block;
+            padding: 8px 16px;
+        }
+
+            a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+        .previous {
+            background-color: #f1f1f1;
+            color: black;
+        }
+
+        .next {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .round {
+            border-radius: 50%;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            width: 40%;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            }
+
+        .container {
+            padding: 2px 16px;
+        }
+    </style>
+    <div class="col-md-12 ">
+        <div class="row">
+            <div class="col-md-2">
+                <label>For Gender</label>
+                <select data-validation="required" name="gender" id="gender" class="form-control">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Size</label>
+                <select name="size" id="size" class="form-control">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Category</label>
+                <select name="category" id="category" class="form-control">
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Season</label>
+                <select name="season" id="season" class="form-control">
+                </select>
+            </div>
+            <div style="display:none;"  class="col-md-2">
+                <label>Body Type</label>
+                <select name="body_type" id="body_type" class="form-control">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Event</label>
+                <select name="events" id="events" class="form-control">
+                </select>
+            </div>
+            <div class="col-md-2" style="display:none;">
+                <label>Skin Tone</label>
+                <select name="skin_color" id="skin_color" class="form-control">
+                </select>
+            </div>
+
+
+            <div class="col-md-1">
+                <label>Action</label>
+                <input type="button" value="Search" id="search_product" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+    <div style="display:none" class="col-md-2">
+        <label>Budget</label>
+        <select style="display:none" name="budget" id="budget" class="form-control">
+        </select>
+    </div>
+    <br />
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-10 col-lg-10" id="itemlist">
+
+            </div>
+            <br /> <br />
+            <div class="col-md-2 col-lg-2">
+                <input type="hidden" name="total_rate" id="total_rate" value="0.00" />
+                <label>Toatl Amount:</label><font id="total" name="total" value="0.00">0.00</font>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div style="margin-top:10px;" class="col-md-12">
+        <input id="submit" sryle="margin-top:10px;" type="submit" value="Buy and Complete" class="btn btn-primary" />
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $(document).on('change', '.budget', function () {
+            if ($(this).val() !== '0') {
+                var category = $(this).attr('category');
+                var active = 0;
+                var minimum = $(this).find('option:selected').attr('minimum');
+                var maximum = $(this).find('option:selected').attr('maximum');
+                $('.itemcategory'+ category).attr('style', 'display:none;');
+                $('.cardcategory' + category).attr('style', 'display:none;');
+                $('.cardcategory' + category).attr('is_active', '0');
+                $(".cardcategory" + category).each(function () {
+                    var order = $(this).attr('order');
+                    var price = $(this).attr('price');
+                    if (parseFloat(price) <= parseFloat(maximum) && parseFloat(price) >= parseFloat(minimum)) {
+                        active = 1;
+                         $('.cardcategory' + category).attr('style', 'display:none;');
+                         $('.cardcategory' + category).attr('is_active', '0');
+                         $('#card_' + category + '_' + order).attr('style', 'display:block;');
+                         $('#card_' + category + '_' + order).attr('is_active', '1');
+                         return false;
+                     }
+                });
+                if (active < 1) {
+                    $('.itemcategory'+ category).attr('style', 'display:block;');
+                }
+               
+            } else {
+                         var category = $(this).attr('category');
+                         $('.itemcategory'+ category).attr('style', 'display:none;');
+                         $('.cardcategory' + category).attr('style', 'display:none;');
+                         $('.cardcategory' + category).attr('is_active', '0');
+                         $('#card_' + category + '_1').attr('style', 'display:block;');
+                         $('#card_' + category + '_1').attr('is_active', '1');
+            }
+        });
+        $(document).on('click', '.chkitems', function () {
+            var total = 0.00;
+            $(".chkitems").each(function () {
+                var price = $(this).attr('price');
+                if (this.checked) {
+                    total = parseFloat(total) + parseFloat(price);
+                }
+            });
+            $('#total').html(total);
+            $('#total_rate').val(total);
+        });
+        $('#budget').attr('disabled', true);
+        $('#submit').attr('disabled',true);
+        $(document).on('click', '.btncard', function () {
+            var category = $(this).attr('category');
+            var order = $(this).attr('order');
+            var change = $(this).attr('change');
+            var max = $('#maxcategoy' + category).val();
+            if (change === 'Next') {
+                var next = parseInt(order) + 1;
+                if ($('#slc' + category).val() !== '0') {
+                    var minimum = $('#slc' + category).find('option:selected').attr('minimum');
+                    var maximum = $('#slc' + category).find('option:selected').attr('maximum');
+                    for (i = parseInt(next); i <= parseInt(max); i++) {
+                        var price = $('#card_' + category + '_' + i).attr('price');
+                        if (parseFloat(price) <= parseFloat(maximum) && parseFloat(price) >= parseFloat(minimum)) {
+                            active = 1;
+                            $('.cardcategory' + category).attr('style', 'display:none;');
+                            $('.cardcategory' + category).attr('is_active', '0');
+                            $('#card_' + category + '_' + i).attr('style', 'display:block;');
+                            $('#card_' + category + '_' + i).attr('is_active', '1');
+                            return false;
+                     }
+                    }
+                }
+                else {
+                    if (parseInt(next) <= parseInt(max)) {
+                        $('.cardcategory' + category).attr('style', 'display:none;');
+                        $('.cardcategory' + category).attr('is_active', '0');
+                        $('#card_' + category + '_' + next).attr('style', 'display:block;')
+                        $('#card_' + category + '_' + next).attr('is_active', '1');
+                    } else {
+                        $(this).attr('disabled', true)
+                    }
+                }
+            } else {
+                var pre = parseInt(order) - 1;
+                if ($('#slc' + category).val() !== '0') {
+                    var minimum = $('#slc' + category).find('option:selected').attr('minimum');
+                    var maximum = $('#slc' + category).find('option:selected').attr('maximum');
+                    for (i = parseInt(pre); i >= 1; i--) {
+                        var price = $('#card_' + category + '_' + i).attr('price');
+                        if (parseFloat(price) <= parseFloat(maximum) && parseFloat(price) >= parseFloat(minimum)) {
+                            active = 1;
+                            $('.cardcategory' + category).attr('style', 'display:none;');
+                            $('.cardcategory' + category).attr('is_active', '0');
+                            $('#card_' + category + '_' + i).attr('style', 'display:block;');
+                            $('#card_' + category + '_' + i).attr('is_active', '1');
+                            return false;
+                     }
+                    }
+                }
+                else {
+                    $('.cardcategory' + category).attr('is_active', '0');
+                    $('.cardcategory' + category).attr('style', 'display:none;');
+                    $('#card_' + category + '_' + pre).attr('style', 'display:block;');
+                    $('#card_' + category + '_' + pre).attr('is_active', '1');
+                }
+            }
+            
+        });
+
+        $.ajax(
+            {
+                url: "/getbudetrange",
+                dataType: "html",
+                success: function (html) {
+                    $('#budget').html(html);
+                    $('#budget').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+
+        $.ajax(
+            {
+                url: "/getcategory",
+                dataType: "html",
+                success: function (html) {
+                    $('#category').html(html);
+                    $('#category').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getseason",
+                dataType: "html",
+                success: function (html) {
+                    $('#season').html(html);
+                    $('#season').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+
+
+        $.ajax(
+            {
+                url: "/getevents",
+                dataType: "html",
+                success: function (html) {
+                    $('#events').html(html);
+                    $('#events').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getsize",
+                dataType: "html",
+                success: function (html) {
+                    $('#size').html(html);
+                    $('#size').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getbody_type",
+                dataType: "html",
+                success: function (html) {
+                    $('#body_type').html(html);
+                    $('#body_type').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+        $.ajax(
+            {
+                url: "/getskin_color",
+                dataType: "html",
+                success: function (html) {
+                    $('#skin_color').html(html);
+                    $('#skin_color').prepend('<option selected value="">Select</option>')
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+        $.ajax(
+            {
+                url: "/getgender",
+                dataType: "html",
+                success: function (html) {
+                    $('#gender').html(html);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+
+
+
+
+        $('#search_product').click(function () {
+            var option = '';
+            $.ajax(
+            {
+                url: "/getbudetrange",
+                dataType: "html",
+                success: function (html) {
+                    option = html;
+                },
+                error: function (request, ajaxOptions, thrownError) {
+
+                }
+            });
+            var size = $('#size').val();
+            var category = $('#category').val();
+            var gender = $('#gender').val();
+            var season = $('#season').val();
+            var body_type = $('#body_type').val();
+            var events = $('#events').val();
+            var skin_color = $('#skin_color').val();
+            var budget = $('#budget').val();
+            var previous = 0;
+            $('#itemlist').html('');
+            $('#total').html(0.00);
+            $('#submit').attr('disabled',false);
+            $('#total_rate').val(0.00);
+            if (gender !== "") {
+                $.ajax(
+                    {
+                        url: "/getprediction",
+                        type: "post",
+                        data: { gender: gender, size: size, category: category, season: season, body_type: body_type, events: events, skin_color: skin_color, budget: budget },
+                        success: function (result) {
+                            results = JSON.parse(result);
+                            var gender = $('#gender').val();
+                            $.ajax(
+                                {
+                                    url: "/getallcategories",
+                                    type: "post",
+                                    async: false,
+                                    data: { gender: gender },
+                                    success: function (categoryresult) {
+                                        categoryresults = JSON.parse(categoryresult);
+                                        $.each(categoryresults, function (i, field) {
+                                            text = '<div class="row" id="categorylist' + field.category_id + '"></div>';
+                                             $('#itemlist').append(text);
+                                            var listcategory = $.grep(results, function (n, i) {
+                                                return n.category === field.category_id;
+                                            });
+                                            console.log(listcategory);
+                                            var order = 0;
+                                            var budget = '';
+                                            $('#budget').attr('disabled',false);
+                                            $.each(listcategory, function (i, item) {
+                                                order = order + 1;
+                                                var listlength = listcategory.length;
+                                                var category_text = " category="+field.category_id+"  ";
+                                                if (i < 1) {
+                                                    var no_item_text = '<div style="display:none" class="card itemcategory'+field.category_id+' col-md-12"><h4>' + item.category_name + '</h4>' +
+                                                        '<img src="/static/uploads/no_items.jpg" alt="Avatar" style="width:100%;height:300px;">' +
+                                                        '<div class="container">' +
+                                                        '<h4><b>No Items Found In this Budget</b> </h4>' +
+                                                        '<p></p>' +
+                                                        '</div>' +
+                                                        '</div>';
+                                                    budget = budget + '<div class="row"><select  category="'+field.category_id+'" style="width:400px" class="form-control  budget" id="slc'+field.category_id+'"><option value="0">Select</option>'+option+'</select></div>';
+                                                    var next_text = " disabled ";
+                                                    if (listlength > i+1) {
+                                                        next_text = " item_id="+listcategory[i+1].id+" ";
+                                                    }
+                                                    var listtext = '<input type="hidden" value="'+item.price+'" name="item_price'+item.id+'"><input type="hidden" value="1" id="maxcategoy'+field.category_id+'"><div price="'+item.price+'" order='+order+' is_active="1" id="card_'+field.category_id+'_'+order+'" style="display:block" class="card cardcategory'+field.category_id+' col-md-12"><h4>' + item.category_name + '<font style="font-size:15px;position: absolute; right: 35px;top:10px;" >Check to Buy</font><input class="chkitems" style="position: absolute; right: 20px;top:12px;" price="'+item.price+'" type="checkbox" name="cart_items" value="'+item.id+'"></h4>' +
+                                                        '<img src="/static/uploads/'+item.image+'" alt="Avatar" style="width:100%;height:300px;">' +
+                                                        '<div class="container">' +
+                                                        '<h4><b>' + item.name + '</b> </h4>' +
+                                                        '<p>Rate :' + item.price + '</p>' +
+                                                        '</div><div class="row"><input style="width:100px;" category= "'+field.category_id+'" order="'+order+'" disabled type="button" class="btncard btncard'+order+' btn btn-info"  value="Previous" change="Previous"><input category= "'+field.category_id+'"  class="btncard btncard'+order+' btn btn-info" style="width:100px;position: absolute; right: 2px;" type="button" '+next_text+' pull-left '+category_text+' order="'+order+'" id="btnnext_'+field.category_id+'_'+order+'" order="'+order+'" value="Next" change="Next"></div>' +
+                                                        '</div>';
+                                                    $('#categorylist' + field.category_id).append('<br /><label>Budget</label>' + budget + ' <br />');
+                                                    $('#categorylist' + field.category_id).append(no_item_text);
+                                                    $('#categorylist' + field.category_id).append(listtext);
+                                                   
+                                                } else {
+                                                    var next_text = " disabled ";
+                                                    if (listlength > i+1) {
+                                                        next_text = " item_id="+listcategory[i+1].id+" ";
+                                                    }
+                                                      var listtext = '<input value="'+item.price+'" type="hidden" name="item_price'+item.id+'"><div price="'+item.price+'" order='+order+'  is_active="0" id="card_'+field.category_id+'_'+order+'" style="display:none;padding-top:20px;" class="card cardcategory'+field.category_id+' col-md-12"><h4>' + item.category_name + '<font style="font-size:15px;position: absolute; right: 35px;top:10px;" >Check to Buy</font><input class="chkitems" style="position: absolute; right: 20px;top:12px;" price="'+item.price+'" type="checkbox" name="cart_items" value="'+item.id+'"></h4>' +
+                                                        '<img src="/static/uploads/'+item.image+'" alt="Avatar" style="width:100%;height:300px;">' +
+                                                        '<div class="container">' +
+                                                        '<h4><b>' + item.name + '</b></h4>' +
+                                                        '<p>Rate :' + item.price + '</p>' +
+                                                        '</div><div class="row"><input category= "'+field.category_id+'" style="width:100px;" order="'+order+'" type="button" '+category_text+' item_id="'+listcategory[i-1].id+'" class="btncard btncard'+order+' btn btn-info" change="Previous"  value="Previous"><input id="btnnext_'+field.category_id+'_'+order+'" order="'+order+'" category= "'+field.category_id+'" style="width:100px;position: absolute; right: 2px;" type="button" '+category_text+'  '+next_text+' pull-left class="btncard btncard'+order+' btn btn-info" value="Next" change="Next"></div>' +
+                                                        '</div>';
+                                                    $('#categorylist' + field.category_id).append(listtext);
+                                                }
+                                                $('#maxcategoy' + field.category_id).val(order);
+                                            });
+                                        });
+
+
+                                    },
+                                    error: function (request, ajaxOptions, thrownError) {
+
+                                    }
+                                });
+
+                        },
+                        error: function (request, ajaxOptions, thrownError) {
+
+                        }
+                    });
+            }
+        });
+
+
+    });
+    $.validate();
+</script>
+{% endblock %}  

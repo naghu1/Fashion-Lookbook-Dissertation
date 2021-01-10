@@ -1,0 +1,29 @@
+﻿ {% extends "admin.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<form method="post" action="/postseason" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Season  *</label>
+                <input type="text" id="season" data-validation="required" name="season" class="form-control" />
+            </div>
+
+        </div>
+    </div>
+    <input type="submit" value="Add Season" class="btn btn-primary" />
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+
+    });
+    $.validate();
+</script>
+{% endblock %}
